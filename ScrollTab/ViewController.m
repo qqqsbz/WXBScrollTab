@@ -15,11 +15,11 @@
 @interface ViewController ()<TSTViewDataSource,TSTViewDelegate,UITableViewDataSource>
 {
     UITableView          *previousTableView;
-    NSInteger rows;
 }
 
 @property (strong, nonatomic) TSTView *tstView;
 @property (strong, nonatomic) NSArray *titleDatas;
+@property (strong, nonatomic) NSMutableDictionary *contentDatas;
 @end
 
 @implementation ViewController
@@ -30,13 +30,13 @@
         self.automaticallyAdjustsScrollViewInsets = NO;
     }
     
-    rows = 10;
-    self.titleDatas = [NSArray arrayWithObjects:@"娱乐",@"头条",@"热点",@"广州",@"晒货",@"体育",@"财经",@"科技",@"图片",@"跟贴",@"直播",@"段子",@"军事",@"汽车",@"情动一刻",@"历史",@"彩票",@"移动互联",@"家居",@"原创",@"游戏",@"画报",@"健康",@"时尚",@"房产",@"政务",nil];
-    //self.titleDatas = [NSArray arrayWithObjects:@"关注",@"广场",@"求助",@"专栏", nil];
+    //self.titleDatas = [NSArray arrayWithObjects:@"娱乐",@"头条",@"热点",@"广州",@"晒货",@"体育",@"财经",@"科技",@"图片",@"跟贴",@"直播",@"段子",@"军事",@"汽车",@"情动一刻",@"历史",@"彩票",@"移动互联",@"家居",@"原创",@"游戏",@"画报",@"健康",@"时尚",@"房产",@"政务",nil];
+    self.titleDatas = [NSArray arrayWithObjects:@"关注",@"广场",@"求助",@"专栏", nil];
+    self.contentDatas = [NSMutableDictionary dictionaryWithObjects:@[@[@"关注1",@"关注2",@"关注3",@"关注4",@"关注5"],@[@"广场1",@"广场2",@"广场3",@"广场4",@"广场5"],@[@"求助1",@"求助2",@"求助3",@"求助4",@"求助5"],@[@"专栏1",@"专栏2",@"专栏3",@"专栏4",@"专栏5"]] forKeys:@[[NSNumber numberWithInteger:0],[NSNumber numberWithInteger:1],[NSNumber numberWithInteger:2],[NSNumber numberWithInteger:3]]];
     self.tstView = [[TSTView alloc] initWithFrame:CGRectMake(0, 20, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame))];
     self.tstView.dataSource = self;
     self.tstView.delegate = self;
-    self.tstView.autoAverageSort = NO;//栏目数大于4时 不能为YES
+    self.tstView.autoAverageSort = YES;//栏目数大于4时 不能为YES
     self.tstView.shadowTitleEqualWidth = NO;//下划线是否与tab标题同宽
     [self.tstView reloadData];
     [self.view addSubview:self.tstView];
@@ -66,11 +66,15 @@
 
 - (void)addRefreshView:(UITableView *)tableView
 {
+    __weak typeof(self) weakSelf = self;
     __block UITableView *contentView = tableView;
     //下拉刷新
     tableView.refreshHeader = [tableView addRefreshHeaderWithHandler:^ {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            rows += 10;
+            NSNumber *key = [NSNumber numberWithInteger:contentView.tag];
+            NSArray *datas = [weakSelf.contentDatas objectForKey:key];
+            datas = [@[@"header"] arrayByAddingObjectsFromArray:datas];
+            [weakSelf.contentDatas setObject:datas forKey:key];
             [contentView reloadData];
             [contentView.refreshHeader endRefresh];
             contentView.refreshFooter.loadMoreEnabled = YES;
@@ -80,7 +84,10 @@
     //上拉加载更多
     tableView.refreshFooter = [tableView addRefreshFooterWithHandler:^ {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            rows += 10;
+            NSNumber *key = [NSNumber numberWithInteger:contentView.tag];
+            NSArray *datas = [weakSelf.contentDatas objectForKey:key];
+            datas = [datas arrayByAddingObject:@"footer"];
+            [weakSelf.contentDatas setObject:datas forKey:key];
             [contentView reloadData];
             [contentView.refreshFooter endRefresh];
             contentView.refreshFooter.loadMoreEnabled = YES;
@@ -114,7 +121,9 @@
 #pragma mark -- UITableView data source
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return rows;
+    NSNumber *key  = [NSNumber numberWithInteger:tableView.tag];
+    NSArray *datas = [self.contentDatas objectForKey:key];
+    return datas.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -124,7 +133,9 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     }
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ %ld",self.titleDatas[tableView.tag],(long)indexPath.row];
+    NSNumber *key  = [NSNumber numberWithInteger:tableView.tag];
+    NSArray *datas = [self.contentDatas objectForKey:key];
+    cell.textLabel.text = datas[indexPath.row];
     return cell;
 }
 
