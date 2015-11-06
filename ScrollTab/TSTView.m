@@ -6,7 +6,10 @@
 //  Copyright (c) 2015 vbuy. All rights reserved.
 //
 
+#define MAS_SHORTHAND
+
 #import "TSTView.h"
+#import <Masonry/Masonry.h>
 #import "NSLayoutConstraint+Util.h"
 @interface TSTView ()
 
@@ -33,10 +36,6 @@
 @property (strong, nonatomic) UIFont *tabTitleNormalFont;
 @property (strong, nonatomic) UIFont *tabTitleSelectedFont;
 
-@property (strong, nonatomic) NSLayoutConstraint *tabShadowLeftConstraint;
-@property (strong, nonatomic) NSLayoutConstraint *tabShadowHeightConstraint;
-@property (strong, nonatomic) NSLayoutConstraint *tabShadowWidthConstraint;
-
 @property (strong, nonatomic) NSMutableArray *reuseableContentViews;
 @property (strong, nonatomic) NSMutableArray *tabButtons;
 
@@ -61,40 +60,35 @@
     
     if (self) {
         
-        //init appearance
-        self.tabSpace = 25.f;
-        self.leading = 5.f;
-        self.trailing = 5.f;
-        self.tabShadowHeight = 3.f;
-        self.tabHeight = 40.f;
+        self.tabSpace           = 25.f;
+        self.leading            = 5.f;
+        self.trailing           = 5.f;
+        self.tabShadowHeight    = 3.f;
+        self.tabHeight          = 40.f;
         self.tabSeparatorHeight = .5f;
-        self.autoAverageSort = NO;
+        self.autoAverageSort    = NO;
         
         self.tabHighlightColor  = [UIColor greenColor];
         self.tabNormalColor     = [UIColor redColor];
         self.tabBackgroundColor = [UIColor clearColor];
         self.tabShadowViewColor = [UIColor grayColor];
         
-        //init view
         self.topTabView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, self.tabHeight)];
-        self.topTabView.translatesAutoresizingMaskIntoConstraints = NO;
-        self.topTabView.showsHorizontalScrollIndicator = NO;
-        self.topTabView.showsVerticalScrollIndicator = NO;
+        self.topTabView.showsHorizontalScrollIndicator  = NO;
+        self.topTabView.showsVerticalScrollIndicator    = NO;
         self.topTabView.autoresizingMask = UIViewAutoresizingNone;
         
         self.tabSeparator = [[UIView alloc] initWithFrame:
                          CGRectMake(0, self.tabHeight - self.tabSeparatorHeight,frame.size.width, self.tabSeparatorHeight)];
-        self.tabSeparator.translatesAutoresizingMaskIntoConstraints = NO;
         self.tabSeparator.backgroundColor = self.tabNormalColor;
         
         
         self.contentView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, self.tabHeight, frame.size.width, frame.size.height - self.tabHeight)];
-        self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
         self.contentView.scrollEnabled = YES;
         self.contentView.autoresizingMask = UIViewAutoresizingNone;
         self.contentView.autoresizesSubviews = NO;
         self.contentView.showsHorizontalScrollIndicator = NO;
-        self.contentView.showsVerticalScrollIndicator = NO;
+        self.contentView.showsVerticalScrollIndicator   = NO;
         self.contentView.pagingEnabled = YES;
         self.contentView.delegate = self;
         
@@ -104,11 +98,11 @@
         
         //init data
         self.tabButtons = [[NSMutableArray alloc] initWithCapacity:5];
-        self.reuseableContentViews = [[NSMutableArray alloc] initWithCapacity:3];
-        self.previousSelectedIndex = -1;
-        self.currentSelectedIndex = -1;
-        self.currentLoadIndex = 0;
-        self.isForwardSwip = YES;
+        self.reuseableContentViews  = [[NSMutableArray alloc] initWithCapacity:3];
+        self.previousSelectedIndex  = -1;
+        self.currentSelectedIndex   = -1;
+        self.currentLoadIndex       = 0;
+        self.isForwardSwip          = YES;
         
     }
     
@@ -123,7 +117,6 @@
     [self buildTabViews];
     [self layoutIfNeeded];
     [self buildContentViews];
-    
     self.currentSelectedBtn = [self.tabButtons firstObject];
     [self autoScrollTopTabBySwipDirctionToPage:0];
 }
@@ -207,7 +200,6 @@
 }
 
 - (void)buildTabShadowView {
-    
     self.tabShadowView = [[UIView alloc] init];
     self.tabShadowView.translatesAutoresizingMaskIntoConstraints = NO;
     self.tabShadowView.backgroundColor = self.tabShadowViewColor;
@@ -252,19 +244,25 @@
 - (void)loadContentViewByIndex:(NSInteger)index {
     
     if (self.dataSource && [self.dataSource respondsToSelector:@selector(tstview:viewForSelectedTabIndex:)]) {
+        
         NSInteger count = self.reuseableContentViews.count;
         NSArray *subViews = self.contentView.subviews;
+        
         if (index >= count) {
+            
             UIView *contentView = [self getContentViewAtIndex:index];
             [self.reuseableContentViews addObject:contentView];
             [self.contentView addSubview:contentView];
+            
         } else {
+            
             NSInteger tag = ((UIView *)subViews[index]).tag;
             if (tag != index) {
                 UIView *contentView = [self getContentViewAtIndex:index];
                 [self.reuseableContentViews addObject:contentView];
                 [self.contentView insertSubview:contentView atIndex:index];
             }
+            
         }
     }
 }
@@ -349,15 +347,19 @@
         
     }
     
+    UIButton *currentSelectedBtn = self.tabButtons[page];
+    CGFloat left,width;
     if (self.isShadowTitleEqualWidth) {
-        self.tabShadowLeftConstraint.constant = self.currentSelectedBtn.frame.origin.x;
-        self.tabShadowWidthConstraint.constant = self.currentSelectedBtn.frame.size.width;
+        left  = self.currentSelectedBtn.frame.origin.x;
+        width = self.currentSelectedBtn.frame.size.width;
     } else {
-        UIButton *currentSelectedBtn = self.tabButtons[page];
-        CGFloat lead = CGRectGetMinX(currentSelectedBtn.frame) - CGRectGetWidth(currentSelectedBtn.frame) / 7;
-        self.tabShadowLeftConstraint.constant  = lead;
-        self.tabShadowWidthConstraint.constant = (CGRectGetWidth(currentSelectedBtn.frame) * 4) / 3;
+        left  = CGRectGetMinX(currentSelectedBtn.frame) - CGRectGetWidth(currentSelectedBtn.frame) / 7;
+        width = (CGRectGetWidth(currentSelectedBtn.frame) * 4) / 3;
     }
+    [self.tabShadowView updateConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.topTabView).offset(left);
+        make.width.mas_equalTo(width);
+    }];
     
     [UIView animateWithDuration:.25 animations:^{
         [self layoutIfNeeded];
@@ -381,116 +383,29 @@
     }
     
     //top tab view to self
-    [NSLayoutConstraint constraintWithItem:self.topTabView
-                                 attribute:NSLayoutAttributeTop
-                                 relatedBy:NSLayoutRelationEqual
-                                 toItem:self
-                                 attribute:NSLayoutAttributeTop
-                                 multiplier:1
-                                 constant:0
-                                 toView:self];
-    
-    [NSLayoutConstraint constraintWithItem:self.topTabView
-                                 attribute:NSLayoutAttributeLeading
-                                 relatedBy:NSLayoutRelationEqual
-                                 toItem:self
-                                 attribute:NSLayoutAttributeLeading
-                                 multiplier:1
-                                 constant:0
-                                 toView:self];
-    
-    [NSLayoutConstraint constraintWithItem:self.topTabView
-                                 attribute:NSLayoutAttributeTrailing
-                                 relatedBy:NSLayoutRelationEqual
-                                 toItem:self
-                                 attribute:NSLayoutAttributeTrailing
-                                 multiplier:1
-                                 constant:0
-                                 toView:self];
-    
-    [NSLayoutConstraint constraintWithItem:self.topTabView
-                                 attribute:NSLayoutAttributeHeight
-                                 relatedBy:NSLayoutRelationEqual
-                                 toItem:self.topTabView
-                                 attribute:NSLayoutAttributeHeight
-                                 multiplier:0
-                                 constant:self.tabHeight
-                                 toView:self.topTabView];
+    [self.topTabView makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self);
+        make.left.equalTo(self);
+        make.right.equalTo(self);
+        make.height.mas_equalTo(self.tabHeight);
+    }];
     
     //separator to top tab
-    [NSLayoutConstraint constraintWithItem:self.tabSeparator
-                                 attribute:NSLayoutAttributeTop
-                                 relatedBy:NSLayoutRelationEqual
-                                 toItem:self.topTabView
-                                 attribute:NSLayoutAttributeBottom
-                                 multiplier:1
-                                 constant:0
-                                 toView:self];
-    
-    [NSLayoutConstraint constraintWithItem:self.tabSeparator
-                                 attribute:NSLayoutAttributeLeading
-                                 relatedBy:NSLayoutRelationEqual
-                                 toItem:self
-                                 attribute:NSLayoutAttributeLeading
-                                 multiplier:1
-                                 constant:0
-                                 toView:self];
-    
-    [NSLayoutConstraint constraintWithItem:self.tabSeparator
-                                 attribute:NSLayoutAttributeTrailing
-                                 relatedBy:NSLayoutRelationEqual
-                                 toItem:self
-                                 attribute:NSLayoutAttributeTrailing
-                                 multiplier:1
-                                 constant:0
-                                 toView:self];
-    
-    [NSLayoutConstraint constraintWithItem:self.tabSeparator
-                                 attribute:NSLayoutAttributeHeight
-                                 relatedBy:NSLayoutRelationEqual
-                                 toItem:self.tabSeparator
-                                 attribute:NSLayoutAttributeHeight
-                                 multiplier:0
-                                 constant:self.tabSeparatorHeight
-                                 toView:self.tabSeparator];
+    [self.tabSeparator makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.topTabView);
+        make.trailing.equalTo(self.topTabView);
+        make.top.equalTo(self.topTabView.bottom);
+        make.height.mas_equalTo(self.tabSeparatorHeight);
+    }];
     
     
     //content view to top tab
-    [NSLayoutConstraint constraintWithItem:self.contentView
-                                 attribute:NSLayoutAttributeTop
-                                 relatedBy:NSLayoutRelationEqual
-                                 toItem:self.tabSeparator
-                                 attribute:NSLayoutAttributeBottom
-                                 multiplier:1
-                                 constant:0
-                                 toView:self];
-    
-    [NSLayoutConstraint constraintWithItem:self.contentView
-                                 attribute:NSLayoutAttributeLeading
-                                 relatedBy:NSLayoutRelationEqual
-                                 toItem:self
-                                 attribute:NSLayoutAttributeLeading
-                                 multiplier:1
-                                 constant:0
-                                 toView:self];
-    
-    [NSLayoutConstraint constraintWithItem:self.contentView
-                                 attribute:NSLayoutAttributeTrailing
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self
-                                 attribute:NSLayoutAttributeTrailing
-                                multiplier:1
-                                  constant:0
-                                    toView:self];
-    
-    [NSLayoutConstraint constraintWithItem:self.contentView
-                                 attribute:NSLayoutAttributeBottom
-                                 relatedBy:NSLayoutRelationEqual
-                                 toItem:self
-                                 attribute:NSLayoutAttributeBottom
-                                 multiplier:1
-                                 constant:0
-                                 toView:self];
+    [self.contentView makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.tabSeparator.bottom);
+        make.left.equalTo(self);
+        make.bottom.equalTo(self);
+        make.trailing.equalTo(self);
+    }];
 }
 
 - (void)addConstraintToTabButtons
@@ -498,41 +413,16 @@
     UIButton *firstButton = [self.tabButtons firstObject];
     UIButton *lastButton = [self.tabButtons lastObject];
     
-    [NSLayoutConstraint constraintWithItem:self.topTabView
-                                 attribute:NSLayoutAttributeTrailing
-                                 relatedBy:NSLayoutRelationEqual
-                                 toItem:lastButton
-                                 attribute:NSLayoutAttributeTrailing
-                                 multiplier:1.0f
-                                 constant:self.isAutoAverageSort ? self.tabSpace : self.leading * 2
-                                 toView:self.topTabView];
+    CGFloat constant = self.isAutoAverageSort ? self.tabSpace : self.leading * 2;
     
-    [NSLayoutConstraint constraintWithItem:firstButton
-                                 attribute:NSLayoutAttributeLeading
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self.topTabView
-                                 attribute:NSLayoutAttributeLeading
-                                multiplier:1.0f
-                                  constant:self.isAutoAverageSort ? self.tabSpace: self.leading * 2
-                                    toView:self.topTabView];
-    
-    [NSLayoutConstraint constraintWithItem:lastButton
-                                 attribute:NSLayoutAttributeHeight
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self.topTabView
-                                 attribute:NSLayoutAttributeHeight
-                                multiplier:1.0f
-                                  constant:0.f
-                                    toView:self.topTabView];
-    
-    [NSLayoutConstraint constraintWithItem:lastButton
-                                 attribute:NSLayoutAttributeCenterY
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self.topTabView
-                                 attribute:NSLayoutAttributeCenterY
-                                multiplier:1.0f
-                                  constant:0.f
-                                    toView:self.topTabView];
+    [firstButton makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.topTabView).offset(constant);
+    }];
+    [lastButton makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.topTabView).offset(-self.trailing * 2);
+        make.height.equalTo(self.topTabView);
+        make.centerY.equalTo(self.topTabView);
+    }];
     if (self.autoAverageSort) {
         [firstButton layoutIfNeeded];
         self.tabSpace = (CGRectGetWidth(self.frame) - CGRectGetWidth(firstButton.frame) * self.tabsCount) / self.tabsCount;
@@ -540,76 +430,25 @@
     }
     
     for (NSInteger i = [self.tabButtons count] - 1; i > 0; --i) {
+        UIButton *btn  = self.tabButtons[i];
+        UIButton *lBtn = self.tabButtons[i - 1];
+        [btn makeConstraints:^(MASConstraintMaker *make) {
+            make.height.equalTo(lBtn.height);
+            make.baseline.equalTo(lBtn.baseline);
+            make.left.equalTo(lBtn.right).offset(self.tabSpace);
+        }];
         
-        [NSLayoutConstraint constraintWithItem:self.tabButtons[i]
-                                     attribute:NSLayoutAttributeHeight
-                                     relatedBy:NSLayoutRelationEqual
-                                        toItem:self.tabButtons[i - 1]
-                                     attribute:NSLayoutAttributeHeight
-                                    multiplier:1.0f
-                                      constant:0.f
-                                        toView:self.topTabView];
-        
-        [NSLayoutConstraint constraintWithItem:self.tabButtons[i]
-                                     attribute:NSLayoutAttributeBaseline
-                                     relatedBy:NSLayoutRelationEqual
-                                        toItem:self.tabButtons[i - 1]
-                                     attribute:NSLayoutAttributeBaseline
-                                    multiplier:1.0f
-                                      constant:0.f
-                                        toView:self.topTabView];
-        
-        [NSLayoutConstraint constraintWithItem:self.tabButtons[i]
-                                     attribute:NSLayoutAttributeLeading
-                                     relatedBy:NSLayoutRelationEqual
-                                        toItem:self.tabButtons[i - 1]
-                                     attribute:NSLayoutAttributeTrailing
-                                    multiplier:1.0f
-                                      constant:self.tabSpace
-                                        toView:self.topTabView];
     }
 }
 
 - (void)addConstraintToTabShadowWihtAnchor:(UIView *)anchor {
     
-    self.tabShadowLeftConstraint =
-    [NSLayoutConstraint constraintWithItem:self.tabShadowView
-                                 attribute:NSLayoutAttributeLeading
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self.topTabView
-                                 attribute:NSLayoutAttributeLeading
-                                multiplier:1.0f
-                                  constant:self.leading
-                                    toView:self.topTabView];
-    
-    [NSLayoutConstraint constraintWithItem:self.tabShadowView
-                                 attribute:NSLayoutAttributeBottom
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:anchor
-                                 attribute:NSLayoutAttributeBottom
-                                multiplier:1.0f
-                                  constant:0
-                                    toView:self.topTabView];
-    
-    self.tabShadowHeightConstraint =
-    [NSLayoutConstraint constraintWithItem:self.tabShadowView
-                                 attribute:NSLayoutAttributeHeight
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:anchor
-                                 attribute:NSLayoutAttributeHeight
-                                multiplier:0.0f
-                                  constant:self.tabShadowHeight
-                                    toView:self.topTabView];
-    
-    self.tabShadowWidthConstraint =
-    [NSLayoutConstraint constraintWithItem:self.tabShadowView
-                                 attribute:NSLayoutAttributeWidth
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:anchor
-                                 attribute:NSLayoutAttributeWidth
-                                multiplier:0.f
-                                  constant:0
-                                    toView:self.topTabView];
+    [self.tabShadowView makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.topTabView.left).offset(self.leading);
+        make.top.equalTo(self.topTabView).offset(self.tabHeight - self.tabShadowHeight);
+        make.height.mas_equalTo(self.tabShadowHeight);
+        make.width.mas_equalTo(CGRectGetWidth(anchor.frame));
+    }];
 }
 
 #pragma mark -- button aciton

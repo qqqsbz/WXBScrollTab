@@ -36,7 +36,7 @@
     self.tstView = [[TSTView alloc] initWithFrame:CGRectMake(0, 20, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame))];
     self.tstView.dataSource = self;
     self.tstView.delegate = self;
-    self.tstView.autoAverageSort = YES;//栏目数大于4时 不能为YES
+    self.tstView.autoAverageSort = YES;//栏目数小于等于4时 自动排列
     self.tstView.shadowTitleEqualWidth = NO;//下划线是否与tab标题同宽
     [self.tstView reloadData];
     [self.view addSubview:self.tstView];
