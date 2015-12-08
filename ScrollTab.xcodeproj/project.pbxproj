@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C181FA57CB47BC6807B7FD32 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D18F37A298149D135514E76D /* libPods.a */; };
 		DC6267E81BEC5AAC0096AD93 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = DC6267E71BEC5AAC0096AD93 /* Podfile */; settings = {ASSET_TAGS = (); }; };
+		DCB7F0EC1C16DAC2000F5460 /* screenshots.gif in Resources */ = {isa = PBXBuildFile; fileRef = DCB7F0EB1C16DAC2000F5460 /* screenshots.gif */; settings = {ASSET_TAGS = (); }; };
 		DCBA5DBD1BEAE2A30066737D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DCBA5DBC1BEAE2A30066737D /* main.m */; };
 		DCBA5DC01BEAE2A30066737D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DCBA5DBF1BEAE2A30066737D /* AppDelegate.m */; };
 		DCBA5DC31BEAE2A30066737D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCBA5DC21BEAE2A30066737D /* ViewController.m */; };
@@ -48,6 +49,7 @@
 		B978223FA31281D84A083E39 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D18F37A298149D135514E76D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC6267E71BEC5AAC0096AD93 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		DCB7F0EB1C16DAC2000F5460 /* screenshots.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = screenshots.gif; sourceTree = "<group>"; };
 		DCBA5DB81BEAE2A30066737D /* ScrollTab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScrollTab.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCBA5DBC1BEAE2A30066737D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DCBA5DBE1BEAE2A30066737D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 		DCBA5DAF1BEAE2A30066737D = {
 			isa = PBXGroup;
 			children = (
+				DCB7F0EB1C16DAC2000F5460 /* screenshots.gif */,
 				DC6267E71BEC5AAC0096AD93 /* Podfile */,
 				DCBA5DBA1BEAE2A30066737D /* ScrollTab */,
 				DCBA5DD41BEAE2A30066737D /* ScrollTabTests */,
@@ -370,6 +373,7 @@
 				DCBA5DC61BEAE2A30066737D /* Main.storyboard in Resources */,
 				DCBA5E171BEB41A80066737D /* tableview_pull_refresh@3x.png in Resources */,
 				DCBA5E161BEB41A80066737D /* tableview_pull_refresh@2x.png in Resources */,
+				DCB7F0EC1C16DAC2000F5460 /* screenshots.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
