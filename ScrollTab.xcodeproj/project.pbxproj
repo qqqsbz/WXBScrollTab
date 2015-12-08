@@ -49,7 +49,7 @@
 		B978223FA31281D84A083E39 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D18F37A298149D135514E76D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC6267E71BEC5AAC0096AD93 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
-		DCB7F0EB1C16DAC2000F5460 /* screenshots.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = screenshots.gif; sourceTree = "<group>"; };
+		DCB7F0EB1C16DAC2000F5460 /* screenshots.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = screenshots.gif; path = ../screenshots.gif; sourceTree = "<group>"; };
 		DCBA5DB81BEAE2A30066737D /* ScrollTab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScrollTab.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCBA5DBC1BEAE2A30066737D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DCBA5DBE1BEAE2A30066737D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -129,7 +129,6 @@
 		DCBA5DAF1BEAE2A30066737D = {
 			isa = PBXGroup;
 			children = (
-				DCB7F0EB1C16DAC2000F5460 /* screenshots.gif */,
 				DC6267E71BEC5AAC0096AD93 /* Podfile */,
 				DCBA5DBA1BEAE2A30066737D /* ScrollTab */,
 				DCBA5DD41BEAE2A30066737D /* ScrollTabTests */,
@@ -153,6 +152,7 @@
 		DCBA5DBA1BEAE2A30066737D /* ScrollTab */ = {
 			isa = PBXGroup;
 			children = (
+				DCB7F0EB1C16DAC2000F5460 /* screenshots.gif */,
 				DCBA5E1B1BEB4E8E0066737D /* controller */,
 				DCBA5E1A1BEB4E800066737D /* resource */,
 				DCBA5E191BEB4E6D0066737D /* app */,
